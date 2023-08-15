@@ -4,16 +4,16 @@ namespace RestWithASPNET.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CalculatrController : ControllerBase
+public class CalculatorController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-    private readonly ILogger<CalculatrController> _logger;
+    private readonly ILogger<CalculatorController> _logger;
 
-    public CalculatrController(ILogger<CalculatrController> logger)
+    public CalculatorController(ILogger<CalculatorController> logger)
     {
         _logger = logger;
     }
@@ -29,14 +29,25 @@ public class CalculatrController : ControllerBase
         return BadRequest("Invalid Input");
     }
 
-    private int ConvertToDecimal(string firstNumber)
+    private bool IsNumeric(string strNumber)
     {
-        throw new NotImplementedException();
+        double number;
+        bool isNumber = double.TryParse(
+            strNumber,
+            System.Globalization.NumberStyles.Any,
+            System.Globalization.NumberFormatInfo.InvariantInfo,
+            out number);
+        return isNumber;
+    }
+    private decimal ConvertToDecimal(string strNumber)
+    {
+        decimal decimalValue;
+        if (decimal.TryParse(strNumber, out decimalValue))
+        {
+            return decimalValue;
+        }
+        return 0;
     }
 
-    private bool IsNumeric(string firstNumber)
-    {
-        throw new NotImplementedException();
-    }
 
 }
