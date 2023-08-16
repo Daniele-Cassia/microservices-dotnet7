@@ -29,6 +29,39 @@ public class CalculatorController : ControllerBase
         return BadRequest("Invalid Input");
     }
 
+    [HttpGet("sub/{firstNumber}/{secondNumber}")]
+    public IActionResult GetSub(string firstNumber, string secondNumber)
+    {
+        if (IsNumeric(firstNumber) && IsNumeric(secondNumber))
+        {
+            var sum = ConvertToDecimal(firstNumber) - ConvertToDecimal(secondNumber);
+            return Ok(sum.ToString());
+        }
+        return BadRequest("Invalid Input");
+    }
+
+    [HttpGet("divider/{firstNumber}/{secondNumber}")]
+    public IActionResult GetDivider(string firstNumber, string secondNumber)
+    {
+        if (IsNumeric(firstNumber) && IsNumeric(secondNumber))
+        {
+            var sum = ConvertToDecimal(firstNumber) / ConvertToDecimal(secondNumber);
+            return Ok(sum.ToString());
+        }
+        return BadRequest("Invalid Input");
+    }
+
+    [HttpGet("mult/{firstNumber}/{secondNumber}")]
+    public IActionResult GetMult(string firstNumber, string secondNumber)
+    {
+        if (IsNumeric(firstNumber) && IsNumeric(secondNumber))
+        {
+            var sum = ConvertToDecimal(firstNumber) * ConvertToDecimal(secondNumber);
+            return Ok(sum.ToString());
+        }
+        return BadRequest("Invalid Input");
+    }
+
     private bool IsNumeric(string strNumber)
     {
         double number;
