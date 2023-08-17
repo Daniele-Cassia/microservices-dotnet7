@@ -9,7 +9,7 @@ namespace GeekShopping.ProductAPI.Model.Base
 {
   public class BaseEntity
   {
-    [key]
+    [Key]
     [Column("id")]
     public long Id { get; set; }
   }
