@@ -1,5 +1,5 @@
 using GeekShopping.IdentityServer.Configuration;
-// using GeekShopping.IdentityServer.Initializer;
+using GeekShopping.IdentityServer.Initializer;
 using GeekShopping.IdentityServer.Model;
 using GeekShopping.IdentityServer.Model.Context;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<MySQLContext>()
+    .AddDefaultTokenProviders();
+
+
 builder.Services.AddDbContext<MySQLContext>(options =>
     {
         var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
@@ -18,10 +24,6 @@ builder.Services.AddDbContext<MySQLContext>(options =>
             new MySqlServerVersion(new Version(8, 0, 34)));
         options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     });
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<MySQLContext>()
-    .AddDefaultTokenProviders();
 
 var IdentityServerBuilder = builder.Services.AddIdentityServer(options =>
 {
@@ -37,7 +39,7 @@ var IdentityServerBuilder = builder.Services.AddIdentityServer(options =>
 .AddInMemoryClients(IdentityConfiguration.Clients)
 .AddAspNetIdentity<ApplicationUser>();
 
-// builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 IdentityServerBuilder.AddDeveloperSigningCredential();
 
@@ -48,7 +50,6 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
-app.UseHttpsRedirection();
 
 app.UseHttpsRedirection();
 
@@ -61,11 +62,12 @@ app.UseIdentityServer();
 app.UseAuthorization();
 
 // Initialize User Database
-// using (var scope = app.Services.CreateScope())
-// {
-//     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-//     dbInitializer.Initialize();
-// }
+// initializer.Initialize();
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+    dbInitializer.Initialize();
+}
 
 
 app.MapControllerRoute(
